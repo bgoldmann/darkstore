@@ -8,6 +8,7 @@
   {% endfor %}
 </ul>
 <p>Total: {{ total_cents / 100 }}</p>
+<p>Payment is held in <strong>escrow</strong> (2-of-3 multisig) until release or dispute. See <a href="/policy/escrow">Escrow &amp; Dispute Policy</a>.</p>
 <form method="post" action="/checkout">
   <p>Payment method (US-010: prefer Monero; if Bitcoin use mixing/CoinJoin):</p>
   <label><input type="radio" name="payment_method" value="xmr" checked> Monero (recommended)</label>

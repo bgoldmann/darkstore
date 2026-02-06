@@ -4,11 +4,63 @@
 <h1>Order {{ order.ref }}</h1>
 <p>Status: {{ order.status }}</p>
 <p>Created: {{ order.created_at }}</p>
+{% if is_seller %}
+<p><em>You are the seller for this order.</em></p>
+{% endif %}
 <ul>
   {% for i in order.items %}
   <li>{{ i.product_title }} × {{ i.quantity }} — {{ (i.quantity * i.price_cents) / 100 }}</li>
   {% endfor %}
 </ul>
 <p>Total: {{ total_cents / 100 }}</p>
-<p><a href="/orders">Back to orders</a></p>
+
+<section aria-labelledby="escrow-heading">
+  <h2 id="escrow-heading">Escrow</h2>
+  <p>Escrow status: <strong>{{ order.escrow_status or 'none' }}</strong></p>
+  {% if order.escrow_status == 'awaiting_payment' %}
+  <p>Payment method: {{ order.payment_method or 'xmr' }} (Monero recommended). Amount: {{ total_cents / 100 }} (same as order total).</p>
+  <p>Escrow address: {% if order.escrow_address %}{{ order.escrow_address }}{% else %}Payment instructions will be sent to your PGP key. Set your key in <a href="/profile">Profile</a> and contact support for instructions.{% endif %}</p>
+  {% if order.auto_finalize_at %}
+  <p>Auto-finalize: {{ order.auto_finalize_at[:10] }} (after this date escrow may release to seller unless a dispute is opened).</p>
+  {% endif %}
+  {% if can_report_payment %}
+  <form method="post" action="/orders/{{ order.ref }}/report-payment">
+    <button type="submit">I have sent payment</button>
+  </form>
+  <p><small>Support will mark the order as funded after confirming payment. You can open a dispute before auto-finalize if needed.</small></p>
+  {% endif %}
+  {% elif order.escrow_status == 'in_escrow' or order.buyer_reported_payment_at %}
+  {% if order.buyer_reported_payment_at and not order.escrow_funded_at %}
+  <p>Payment reported by buyer — awaiting confirmation.</p>
+  {% endif %}
+  {% if order.escrow_status == 'in_escrow' %}
+  <p>Funds are in escrow. Buyer can confirm release to seller; or either party can open a dispute before auto-finalize.</p>
+  {% if can_confirm_release %}
+  <form method="post" action="/orders/{{ order.ref }}/confirm-release">
+    <button type="submit">Confirm release to seller</button>
+  </form>
+  {% endif %}
+  {% endif %}
+  {% if order.auto_finalize_at %}
+  <p>Auto-finalize: {{ order.auto_finalize_at[:10] }}</p>
+  {% endif %}
+  {% endif %}
+  {% if order.escrow_status == 'released_to_seller' %}
+  <p>Escrow released to seller. Order can proceed to processing/shipped.</p>
+  {% endif %}
+  {% if order.escrow_status == 'released_to_buyer' %}
+  <p>Escrow released to buyer (refund).</p>
+  {% endif %}
+  {% if order.escrow_status == 'disputed' %}
+  <p>This order is in dispute. Support will resolve (release to seller or buyer). Send evidence encrypted to the platform PGP key (see <a href="/policy/escrow">Escrow policy</a>).</p>
+  {% endif %}
+  {% if can_open_dispute %}
+  <p><a href="/orders/{{ order.ref }}/dispute">Open dispute</a> (PGP required; before auto-finalize).</p>
+  {% endif %}
+  {% if past_auto_finalize and order.escrow_status not in ['released_to_seller','released_to_buyer','disputed'] %}
+  <p><em>Auto-finalize date has passed. Disputes cannot be opened. Contact support if needed.</em></p>
+  {% endif %}
+</section>
+
+<p><a href="/orders">Back to orders</a>{% if is_seller %} · <a href="/seller">Seller dashboard</a>{% endif %}</p>
 {% endblock %}

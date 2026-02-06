@@ -20,4 +20,13 @@
   <li>No products.</li>
   {% endfor %}
 </ul>
+<h2>Orders (escrow)</h2>
+<p>Orders where you are the seller. <a href="/policy/escrow">Escrow &amp; Dispute Policy</a></p>
+<ul>
+  {% for o in seller_orders %}
+  <li><a href="/orders/{{ o.ref }}">Order {{ o.ref }}</a> — escrow: {{ o.escrow_status or 'none' }} — {{ o.created_at[:10] }}</li>
+  {% else %}
+  <li>No orders.</li>
+  {% endfor %}
+</ul>
 {% endblock %}

@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import RequireSeller, get_current_user, require_user
 from app.database import get_db
+from app.models.order import Order
 from app.models.product import Product
 from app.models.user import User
 from app.templating import templates
@@ -29,7 +30,15 @@ async def seller_dashboard(
     else:
         result = await db.execute(select(Product).where(Product.seller_id == user.id).order_by(Product.created_at.desc()))
     products = result.scalars().all()
-    return templates.TemplateResponse("seller/dashboard.html", {"request": request, "user": user, "products": products})
+    # Orders where this seller is primary (for escrow/release)
+    order_result = await db.execute(
+        select(Order).where(Order.primary_seller_id == user.id).order_by(Order.created_at.desc())
+    )
+    seller_orders = order_result.scalars().all()
+    return templates.TemplateResponse(
+        "seller/dashboard.html",
+        {"request": request, "user": user, "products": products, "seller_orders": seller_orders},
+    )
 
 
 @router.get("/new", response_class=HTMLResponse)

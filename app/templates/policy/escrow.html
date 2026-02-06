@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Escrow &amp; Dispute Policy{% endblock %}
+{% block content %}
+<h1>Escrow &amp; Dispute Policy</h1>
+<p>This store uses <strong>2-of-3 multisig</strong> escrow. The platform never holds a single key: buyer, seller, and the market (mediator) each hold one key. Funds move only when two of three sign (happy path: buyer + seller; dispute: mediator + the party we rule for). See <a href="https://docs.getmonero.org/multisignature/">Monero multisignature</a> and our research doc for details.</p>
+
+<h2>Time limits</h2>
+<ul>
+  <li><strong>Auto-finalize:</strong> Escrow auto-releases to the seller after a set window (e.g. 14–30 days) unless a dispute is opened.</li>
+  <li><strong>Disputes</strong> can only be opened before the auto-finalize time. Extensions may be granted by support where appropriate.</li>
+</ul>
+
+<h2>How to open a dispute</h2>
+<ul>
+  <li>Before the auto-finalize deadline, go to the order page and use &quot;Open dispute&quot;.</li>
+  <li><strong>PGP is required:</strong> You must have a public key set on your account. Send evidence (e.g. proof of shipment/delivery, terms) encrypted to the platform key. Evidence is handled via PGP; do not paste sensitive data in plain text.</li>
+  <li>The mediator (support/admin) will review and decide: release to seller or release to buyer.</li>
+</ul>
+
+<h2>Mediator role</h2>
+<p>Support and admin can: mark escrow as funded (when payment is confirmed), resolve disputes by choosing &quot;Release to seller&quot; or &quot;Release to buyer&quot;. In 2-of-3 multisig terms, the mediator signs with the party they rule for. Mediators do not have access to move funds alone.</p>
+
+<h2>Platform PGP key</h2>
+<p>Verify signatures on official announcements and support messages using the key below. Never trust instructions that are not signed by this key.</p>
+{% if platform_pgp_public_key %}
+<pre class="pgp-key">{{ platform_pgp_public_key }}</pre>
+{% else %}
+<p><em>Platform PGP key not configured. Set <code>STORE_PLATFORM_PGP_PUBLIC_KEY</code> or <code>STORE_PLATFORM_PGP_PUBLIC_KEY_PATH</code> to publish the key. Verify official messages via your preferred channel until then.</em></p>
+{% endif %}
+
+<p><a href="/">Back to home</a> · <a href="/catalog">Catalog</a></p>
+{% endblock %}

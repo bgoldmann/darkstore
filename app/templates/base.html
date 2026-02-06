@@ -14,6 +14,7 @@
       {% if user %}
         <a href="/cart">Cart</a>
         <a href="/orders">Orders</a>
+        <a href="/profile">Profile</a>
         {% if user.role.value in ['seller','admin'] %}
           <a href="/seller">My listings</a>
         {% endif %}
@@ -31,7 +32,7 @@
     {% block content %}{% endblock %}
   </main>
   <footer>
-    <p>Use a strong passphrase and password manager. Access only via Tor.</p>
+    <p>Use a strong passphrase and password manager. Access only via Tor. <a href="/policy/escrow">Escrow &amp; Dispute Policy</a></p>
   </footer>
 </body>
 </html>

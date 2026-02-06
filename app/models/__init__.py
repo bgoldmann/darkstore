@@ -1,7 +1,7 @@
 from app.models.user import User, UserRole
 from app.models.product import Product, ProductCategory
 from app.models.cart import Cart, CartItem
-from app.models.order import Order, OrderItem, OrderStatus
+from app.models.order import Order, OrderItem, OrderStatus, EscrowStatus
 
 __all__ = [
     "User",
@@ -13,4 +13,5 @@ __all__ = [
     "Order",
     "OrderItem",
     "OrderStatus",
+    "EscrowStatus",
 ]

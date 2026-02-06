@@ -45,6 +45,23 @@ class Settings:
         self.allowed_image_extensions: tuple[str, ...] = (".jpg", ".jpeg", ".png", ".gif", ".webp")
         self.log_level: str = _env("STORE_LOG_LEVEL", "INFO")
         self.log_path: str | None = os.getenv("STORE_LOG_PATH") or None
+        # Platform PGP public key for escrow/support; verify signatures on official messages (US-020).
+        # Set STORE_PLATFORM_PGP_PUBLIC_KEY (full ASCII-armored key) or STORE_PLATFORM_PGP_PUBLIC_KEY_PATH (file path).
+        self.platform_pgp_public_key: str | None = os.getenv("STORE_PLATFORM_PGP_PUBLIC_KEY") or None
+        self.platform_pgp_public_key_path: str | None = os.getenv("STORE_PLATFORM_PGP_PUBLIC_KEY_PATH") or None
+        self.escrow_auto_finalize_days: int = _env_int("STORE_ESCROW_AUTO_FINALIZE_DAYS", 14)
+
+    def get_platform_pgp_public_key(self) -> str | None:
+        """Return platform PGP public key (from env or from file). Used for Escrow policy page; never logged."""
+        if self.platform_pgp_public_key:
+            return self.platform_pgp_public_key.strip()
+        if self.platform_pgp_public_key_path:
+            try:
+                with open(self.platform_pgp_public_key_path, "r") as f:
+                    return f.read().strip()
+            except OSError:
+                return None
+        return None
 
 
 def get_settings() -> Settings:

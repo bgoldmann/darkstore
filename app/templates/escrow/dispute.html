@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Open dispute — Order {{ order.ref }}{% endblock %}
+{% block content %}
+<h1>Open dispute — Order {{ order.ref }}</h1>
+{% if error == 'pgp_required' %}
+<p><strong>PGP public key is required to open a dispute.</strong> Set your key in <a href="/profile">Profile</a>.</p>
+{% endif %}
+{% if not has_pgp %}
+<p><strong>You must set a PGP public key to open a dispute.</strong> Go to <a href="/profile">Profile</a> to add your key, then return here.</p>
+<p><a href="/orders/{{ order.ref }}">Back to order</a></p>
+{% else %}
+<p>Opening a dispute will put the order in dispute. Send your evidence (e.g. proof of shipment, terms) encrypted to the platform PGP key. See <a href="/policy/escrow">Escrow &amp; Dispute Policy</a>.</p>
+<form method="post" action="/orders/{{ order.ref }}/dispute">
+  <button type="submit">Open dispute</button>
+</form>
+<p><a href="/orders/{{ order.ref }}">Cancel</a></p>
+{% endif %}
+{% endblock %}

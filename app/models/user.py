@@ -39,6 +39,7 @@ class User(Base):
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.BUYER)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[str] = mapped_column(String(50))  # ISO timestamp
+    pgp_public_key: Mapped[str | None] = mapped_column(Text, nullable=True)  # US-020 escrow/dispute
 
     products: Mapped[list[Product]] = relationship("Product", back_populates="seller")
     cart: Mapped["Cart | None"] = relationship("Cart", back_populates="user", uselist=False)
@@ -48,6 +49,9 @@ class User(Base):
         return self.role in roles
 
     def can_manage_orders(self) -> bool:
+        return self.role in (UserRole.ADMIN, UserRole.SUPPORT)
+
+    def can_resolve_escrow_dispute(self) -> bool:
         return self.role in (UserRole.ADMIN, UserRole.SUPPORT)
 
     def can_manage_products(self) -> bool:

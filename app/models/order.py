@@ -19,6 +19,16 @@ def _order_ref() -> str:
     return uuid.uuid4().hex[:10].upper()
 
 
+class EscrowStatus(str, PyEnum):
+    NONE = "none"
+    AWAITING_PAYMENT = "awaiting_payment"
+    IN_ESCROW = "in_escrow"
+    RELEASED_TO_SELLER = "released_to_seller"
+    RELEASED_TO_BUYER = "released_to_buyer"
+    DISPUTED = "disputed"
+    CANCELLED = "cancelled"
+
+
 class OrderStatus(str, PyEnum):
     PENDING = "pending"
     PAID = "paid"
@@ -40,8 +50,21 @@ class Order(Base):
     operator_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[str] = mapped_column(String(50))
     updated_at: Mapped[str] = mapped_column(String(50))
+    # Escrow (US-020)
+    escrow_status: Mapped[str] = mapped_column(String(32), default=EscrowStatus.NONE.value)
+    escrow_address: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    escrow_amount_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    escrow_funded_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    buyer_reported_payment_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    auto_finalize_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    primary_seller_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    dispute_opened_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    dispute_resolved_at: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    dispute_resolution: Mapped[str | None] = mapped_column(String(32), nullable=True)  # released_to_seller | released_to_buyer
+    dispute_evidence_encrypted: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    user: Mapped[User] = relationship("User", back_populates="orders")
+    user: Mapped[User] = relationship("User", back_populates="orders", foreign_keys=[user_id])
+    primary_seller: Mapped[User | None] = relationship("User", foreign_keys=[primary_seller_id])
     items: Mapped[list[OrderItem]] = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
 
 

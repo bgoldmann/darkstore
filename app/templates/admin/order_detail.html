@@ -14,6 +14,31 @@
   </select>
   <button type="submit">Update status</button>
 </form>
+
+<h2>Escrow</h2>
+<p>Escrow status: <strong>{{ order.escrow_status or 'none' }}</strong></p>
+{% if order.buyer_reported_payment_at %}
+<p>Buyer reported payment: {{ order.buyer_reported_payment_at[:19] }}</p>
+{% endif %}
+{% if order.dispute_opened_at %}
+<p>Dispute opened: {{ order.dispute_opened_at[:19] }}{% if order.dispute_resolved_at %} — Resolved: {{ order.dispute_resolution }}{% endif %}</p>
+{% endif %}
+{% if can_mark_funded %}
+<form method="post" action="/admin/orders/{{ order.ref }}/mark-funded" style="display:inline">
+  <button type="submit">Mark as funded</button>
+</form>
+{% endif %}
+{% if can_resolve_dispute %}
+<form method="post" action="/admin/orders/{{ order.ref }}/resolve-dispute" style="display:inline">
+  <input type="hidden" name="resolution" value="released_to_seller">
+  <button type="submit">Resolve: release to seller</button>
+</form>
+<form method="post" action="/admin/orders/{{ order.ref }}/resolve-dispute" style="display:inline">
+  <input type="hidden" name="resolution" value="released_to_buyer">
+  <button type="submit">Resolve: release to buyer</button>
+</form>
+{% endif %}
+
 <ul>
   {% for i in order.items %}
   <li>{{ i.product_title }} × {{ i.quantity }} — {{ (i.quantity * i.price_cents) / 100 }}</li>

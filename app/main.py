@@ -15,7 +15,7 @@ from app.auth import decode_session
 from app.config import get_settings
 from app.database import async_session_factory, init_db
 from app.models.user import User
-from app.routers import auth_router, catalog_router, cart_router, checkout_router, orders_router, seller_router, admin_router
+from app.routers import auth_router, catalog_router, cart_router, checkout_router, orders_router, seller_router, admin_router, policy_router, escrow_router
 
 settings = get_settings()
 
@@ -93,6 +93,9 @@ app.include_router(checkout_router, prefix="", tags=["checkout"])
 app.include_router(orders_router, prefix="", tags=["orders"])
 app.include_router(seller_router, prefix="/seller", tags=["seller"])
 app.include_router(admin_router, prefix="/admin", tags=["admin"])
+app.include_router(policy_router, prefix="", tags=["policy"])
+app.include_router(escrow_router, prefix="", tags=["escrow"])
+app.include_router(profile_router, prefix="", tags=["profile"])
 
 
 @app.get("/", response_class=HTMLResponse)
