@@ -1,0 +1,13 @@
+/* Darkstore – minimal styles; works without JS */
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 1rem; max-width: 48rem; }
+header { border-bottom: 1px solid #333; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+nav a { margin-right: 1rem; }
+main { min-height: 40vh; }
+footer { margin-top: 2rem; font-size: 0.9rem; color: #666; }
+.error { color: #c00; }
+ul.product-list { list-style: none; padding: 0; }
+ul.product-list li { padding: 0.25rem 0; }
+label { display: block; margin-top: 0.5rem; }
+input[type="text"], input[type="password"], input[type="number"], textarea, select { margin-top: 0.25rem; width: 100%; max-width: 20rem; }
+button { margin-top: 0.5rem; margin-right: 0.5rem; }

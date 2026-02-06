@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Manage orders{% endblock %}
+{% block content %}
+<h1>Manage orders</h1>
+<ul>
+  {% for o in orders %}
+  <li><a href="/admin/orders/{{ o.ref }}">{{ o.ref }}</a> — {{ o.status }} — {{ o.created_at[:10] }}</li>
+  {% else %}
+  <li>No orders.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

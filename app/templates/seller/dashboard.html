@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My listings{% endblock %}
+{% block content %}
+<h1>My listings</h1>
+<p><a href="/seller/new">Add product</a></p>
+<ul>
+  {% for p in products %}
+  <li>
+    <a href="/p/{{ p.slug }}">{{ p.title }}</a>
+    — {{ p.price_display }}
+    — {{ 'listed' if p.is_listed else 'unlisted' }}
+    <a href="/seller/edit/{{ p.slug }}">Edit</a>
+    {% if p.is_listed %}
+    <form method="post" action="/seller/delist/{{ p.slug }}" style="display:inline">
+      <button type="submit">Delist</button>
+    </form>
+    {% endif %}
+  </li>
+  {% else %}
+  <li>No products.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

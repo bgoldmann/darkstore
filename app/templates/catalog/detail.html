@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block content %}
+<h1>{{ product.title }}</h1>
+<p>{{ product.description or '' }}</p>
+<p>Price: {{ product.price_display }}</p>
+<p>Category: {{ product.category }}</p>
+{% if user %}
+<form method="post" action="/cart/add">
+  <input type="hidden" name="product_id" value="{{ product.id }}">
+  <input type="number" name="quantity" value="1" min="1">
+  <button type="submit">Add to cart</button>
+</form>
+{% else %}
+<p><a href="/login">Log in</a> to add to cart.</p>
+{% endif %}
+<p><a href="/catalog">Back to catalog</a></p>
+{% endblock %}

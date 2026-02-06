@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.ref }}{% endblock %}
+{% block content %}
+<h1>Order {{ order.ref }}</h1>
+<p>Status: {{ order.status }}</p>
+<p>Created: {{ order.created_at }}</p>
+<ul>
+  {% for i in order.items %}
+  <li>{{ i.product_title }} × {{ i.quantity }} — {{ (i.quantity * i.price_cents) / 100 }}</li>
+  {% endfor %}
+</ul>
+<p>Total: {{ total_cents / 100 }}</p>
+<p><a href="/orders">Back to orders</a></p>
+{% endblock %}

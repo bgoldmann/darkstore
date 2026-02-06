@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit product' if product else 'New product' }}{% endblock %}
+{% block content %}
+<h1>{{ 'Edit product' if product else 'New product' }}</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<form method="post" action="{% if product %}/seller/edit/{{ product.slug }}{% else %}/seller/new{% endif %}">
+  <label for="title">Title</label>
+  <input id="title" name="title" type="text" value="{{ product.title if product else '' }}" required>
+  <label for="description">Description</label>
+  <textarea id="description" name="description">{{ product.description if product else '' }}</textarea>
+  <label for="price">Price</label>
+  <input id="price" name="price" type="number" step="0.01" value="{{ (product.price_cents / 100) if product else '' }}" required>
+  <label for="category">Category</label>
+  <select id="category" name="category">
+    <option value="general" {{ 'selected' if product and product.category == 'general' else '' }}>General</option>
+    <option value="electronics" {{ 'selected' if product and product.category == 'electronics' else '' }}>Electronics</option>
+    <option value="books" {{ 'selected' if product and product.category == 'books' else '' }}>Books</option>
+    <option value="other" {{ 'selected' if product and product.category == 'other' else '' }}>Other</option>
+  </select>
+  {% if product %}
+  <label><input type="checkbox" name="listed" value="1" {{ 'checked' if product.is_listed else '' }}> Listed</label>
+  {% endif %}
+  <button type="submit">Save</button>
+</form>
+<p><a href="/seller">Back to listings</a></p>
+{% endblock %}

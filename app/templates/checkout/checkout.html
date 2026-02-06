@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<ul>
+  {% for i in cart.items %}
+  <li>{{ i.product.title }} × {{ i.quantity }} — {{ (i.quantity * i.product.price_cents) / 100 }}</li>
+  {% endfor %}
+</ul>
+<p>Total: {{ total_cents / 100 }}</p>
+<form method="post" action="/checkout">
+  <p>Payment method (US-010: prefer Monero; if Bitcoin use mixing/CoinJoin):</p>
+  <label><input type="radio" name="payment_method" value="xmr" checked> Monero (recommended)</label>
+  <label><input type="radio" name="payment_method" value="btc"> Bitcoin (use CoinJoin/mixing)</label>
+  <button type="submit">Place order</button>
+</form>
+<p><a href="/cart">Back to cart</a></p>
+{% endblock %}

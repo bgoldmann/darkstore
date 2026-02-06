@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Catalog{% endblock %}
+{% block content %}
+<h1>Catalog</h1>
+<ul class="product-list">
+  {% for p in products %}
+  <li>
+    <a href="/p/{{ p.slug }}">{{ p.title }}</a>
+    — {{ p.price_display }}
+    {% if category %}({{ p.category }}){% endif %}
+  </li>
+  {% else %}
+  <li>No products.</li>
+  {% endfor %}
+</ul>
+<p><a href="/">Home</a></p>
+{% endblock %}

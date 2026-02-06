@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.ref }}{% endblock %}
+{% block content %}
+<h1>Order {{ order.ref }}</h1>
+<p>Status: {{ order.status }}</p>
+<form method="post" action="/admin/orders/{{ order.ref }}/status">
+  <select name="status">
+    <option value="pending" {{ 'selected' if order.status == 'pending' else '' }}>Pending</option>
+    <option value="paid" {{ 'selected' if order.status == 'paid' else '' }}>Paid</option>
+    <option value="processing" {{ 'selected' if order.status == 'processing' else '' }}>Processing</option>
+    <option value="shipped" {{ 'selected' if order.status == 'shipped' else '' }}>Shipped</option>
+    <option value="completed" {{ 'selected' if order.status == 'completed' else '' }}>Completed</option>
+    <option value="cancelled" {{ 'selected' if order.status == 'cancelled' else '' }}>Cancelled</option>
+  </select>
+  <button type="submit">Update status</button>
+</form>
+<ul>
+  {% for i in order.items %}
+  <li>{{ i.product_title }} × {{ i.quantity }} — {{ (i.quantity * i.price_cents) / 100 }}</li>
+  {% endfor %}
+</ul>
+<p>Total: {{ total_cents / 100 }}</p>
+<p><a href="/admin/orders">Back to orders</a></p>
+{% endblock %}

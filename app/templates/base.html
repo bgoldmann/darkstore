@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Darkstore{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/catalog">Catalog</a>
+      {% if user %}
+        <a href="/cart">Cart</a>
+        <a href="/orders">Orders</a>
+        {% if user.role.value in ['seller','admin'] %}
+          <a href="/seller">My listings</a>
+        {% endif %}
+        {% if user.role.value in ['support','admin'] %}
+          <a href="/admin/orders">Manage orders</a>
+        {% endif %}
+        <a href="/logout">Log out</a>
+      {% else %}
+        <a href="/login">Log in</a>
+        <a href="/register">Register</a>
+      {% endif %}
+    </nav>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    <p>Use a strong passphrase and password manager. Access only via Tor.</p>
+  </footer>
+</body>
+</html>

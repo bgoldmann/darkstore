@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h1>Cart</h1>
+{% if cart.items %}
+<ul>
+  {% for i in cart.items %}
+  <li>
+    {{ i.product.title }} × {{ i.quantity }} — {{ (i.quantity * i.product.price_cents) / 100 }} 
+    <form method="post" action="/cart/update" style="display:inline">
+      <input type="hidden" name="item_id" value="{{ i.id }}">
+      <input type="number" name="quantity" value="{{ i.quantity }}" min="0">
+      <button type="submit">Update</button>
+    </form>
+    <form method="post" action="/cart/remove" style="display:inline">
+      <input type="hidden" name="item_id" value="{{ i.id }}">
+      <button type="submit">Remove</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+<p>Total: {{ total_cents / 100 }}</p>
+<p><a href="/checkout">Checkout</a></p>
+{% else %}
+<p>Cart is empty.</p>
+<p><a href="/catalog">Browse catalog</a></p>
+{% endif %}
+{% endblock %}
